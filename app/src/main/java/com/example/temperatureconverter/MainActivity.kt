@@ -1,15 +1,15 @@
 package com.example.temperatureconverter
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import com.example.temperatureconverter.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding.celsiusSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 binding.celsiusValueTextView.text = (seekBar.progress/100.00).toString()
-                binding.fahrenheitSeekbar.progress = (convertToFahrenheit(seekBar.progress.toDouble()/100.0) *100).toInt()
+                binding.fahrenheitSeekbar.progress = (Converter().convertToFahrenheit(seekBar.progress.toDouble()/100.0) *100).toInt()
                 if(seekBar.progress <= 2000)
                     Snackbar.make(rootView, R.string.warmSnackbar, Snackbar.LENGTH_SHORT).show()
                 else
@@ -29,12 +29,13 @@ class MainActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+
         binding.fahrenheitSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if(seekBar.progress<3200)
                     seekBar.progress = 3200
                 binding.fahrenheitValueTextView.text = (seekBar.progress/100.00).toString()
-                binding.celsiusSeekbar.progress = (convertToCelsius(seekBar.progress.toDouble()/100.0)*100).toInt()
+                binding.celsiusSeekbar.progress = (Converter().convertToCelsius(seekBar.progress.toDouble()/100.0)*100).toInt()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
@@ -42,10 +43,3 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-fun convertToCelsius(value: Double): Double{
-    return (value - 32)*(5/9.0)
-}
-
-fun convertToFahrenheit(value: Double): Double{
-    return (value * (9/5.0)) + 32
-}
